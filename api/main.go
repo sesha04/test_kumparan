@@ -33,4 +33,6 @@ func main() {
 	}(s)
 
 	<-sigChan
+
+	log.Println("\nShutting down...")
 }
