@@ -12,6 +12,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
+	"github.com/patrickmn/go-cache"
 
 	articleDelivery "github.com/sesha04/test_kumparan/article/delivery"
 	articleRepo "github.com/sesha04/test_kumparan/article/repository"
@@ -46,7 +47,6 @@ func newMysql() (*sql.DB, error) {
 
 func main() {
 	e := echo.New()
-
 	db, err := newMysql()
 	if err != nil {
 		log.Fatal(err)
@@ -61,7 +61,8 @@ func main() {
 
 	ar := articleRepo.NewArticleRepository(db)
 	au := articleUsecase.NewArticleUsecase(ar)
-	articleDelivery.NewArticleHandler(e, au)
+	ac := cache.New(5*time.Minute, 10*time.Minute)
+	articleDelivery.NewArticleHandler(e, au, ac)
 
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
