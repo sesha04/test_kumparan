@@ -24,3 +24,26 @@ func (_m *ArticleUsecase) Create(_a0 context.Context, _a1 *domain.Article) error
 
 	return r0
 }
+
+// GetArticles provides a mock function with given fields: ctx, author, query
+func (_m *ArticleUsecase) GetArticles(ctx context.Context, author string, query string) ([]domain.Article, error) {
+	ret := _m.Called(ctx, author, query)
+
+	var r0 []domain.Article
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) []domain.Article); ok {
+		r0 = rf(ctx, author, query)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]domain.Article)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(ctx, author, query)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}

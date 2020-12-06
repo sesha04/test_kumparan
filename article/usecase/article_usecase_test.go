@@ -9,29 +9,38 @@ import (
 
 	"github.com/sesha04/test_kumparan/article/usecase"
 	"github.com/sesha04/test_kumparan/domain"
-	"github.com/sesha04/test_kumparan/domain/mocks"
+	"github.com/sesha04/test_kumparan/mocks"
 )
 
 func TestCreate(t *testing.T) {
 	mockArticleRepo := new(mocks.ArticleRepository)
 	mockArticle := domain.Article{
 		Title:  "Hello",
-		Body:   "Content",
+		Body:   "Body",
 		Author: "Sesha Andipa",
 	}
 
-	t.Run("success", func(t *testing.T) {
-		tempMockArticle := mockArticle
-		tempMockArticle.ID = 0
-		mockArticleRepo.On("Store", mock.Anything, mock.AnythingOfType("*domain.Article")).Return(nil).Once()
+	tempMockArticle := mockArticle
+	mockArticleRepo.On("Store", mock.Anything, mock.AnythingOfType("*domain.Article")).Return(nil).Once()
+	u := usecase.NewArticleUsecase(mockArticleRepo)
+	err := u.Create(context.TODO(), &tempMockArticle)
 
-		u := usecase.NewArticleUsecase(mockArticleRepo)
+	assert.NoError(t, err)
+	mockArticleRepo.AssertExpectations(t)
+}
 
-		err := u.Create(context.TODO(), &tempMockArticle)
+func TestGetArticles(t *testing.T) {
+	author := "Sesha Andipa"
+	search := "sesuatu"
+	query := domain.ArticleQuery{
+		Author: author,
+		Query:  search,
+	}
+	mockArticleRepo := new(mocks.ArticleRepository)
+	mockArticleRepo.On("GetArticles", mock.Anything, query).Return([]domain.Article{}, nil).Once()
+	u := usecase.NewArticleUsecase(mockArticleRepo)
+	_, err := u.GetArticles(context.TODO(), author, search)
 
-		assert.NoError(t, err)
-		assert.Equal(t, mockArticle.Title, tempMockArticle.Title)
-		mockArticleRepo.AssertExpectations(t)
-	})
-
+	assert.NoError(t, err)
+	mockArticleRepo.AssertExpectations(t)
 }

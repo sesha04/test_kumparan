@@ -11,6 +11,29 @@ type ArticleRepository struct {
 	mock.Mock
 }
 
+// GetArticles provides a mock function with given fields: ctx, q
+func (_m *ArticleRepository) GetArticles(ctx context.Context, q domain.ArticleQuery) ([]domain.Article, error) {
+	ret := _m.Called(ctx, q)
+
+	var r0 []domain.Article
+	if rf, ok := ret.Get(0).(func(context.Context, domain.ArticleQuery) []domain.Article); ok {
+		r0 = rf(ctx, q)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]domain.Article)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, domain.ArticleQuery) error); ok {
+		r1 = rf(ctx, q)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Store provides a mock function with given fields: ctx, a
 func (_m *ArticleRepository) Store(ctx context.Context, a *domain.Article) error {
 	ret := _m.Called(ctx, a)

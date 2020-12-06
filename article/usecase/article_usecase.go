@@ -16,7 +16,14 @@ func NewArticleUsecase(a domain.ArticleRepository) domain.ArticleUsecase {
 	}
 }
 
-func (au *articleUsecase) Create(ctx context.Context, a *domain.Article) (err error){
-	err = au.articleRepo.Store(ctx, a)
-	return err
+func (au *articleUsecase) Create(ctx context.Context, a *domain.Article) (err error) {
+	return au.articleRepo.Store(ctx, a)
+}
+
+func (au *articleUsecase) GetArticles(ctx context.Context, author, query string) ([]domain.Article, error) {
+	q := domain.ArticleQuery{
+		Author: author,
+		Query:  query,
+	}
+	return au.articleRepo.GetArticles(ctx, q)
 }
